@@ -33,6 +33,7 @@
         <p>Jumlah koin Anda: <span id="coinAmount">100</span></p>
         <button class="button" id="addCoinsBtn" onclick="addCoins(100)">Tambahkan 100 Koin</button>
         <p>Waktu terakhir tambah koin: <span id="lastTime"></span></p>
+        <p id="timer"></p>
         <br>
         <h2>Options</h2>
         <select id="options">
@@ -58,9 +59,26 @@
                 document.getElementById('coinAmount').innerText = coinAmount;
                 localStorage.setItem('lastTime', currentTime);
                 document.getElementById('lastTime').innerText = new Date(currentTime).toLocaleString();
+                startTimer();
             } else {
                 alert('Anda harus menunggu 12 jam sebelum menambahkan koin lagi.');
             }
+        }
+
+        // Fungsi untuk memulai timer hitung mundur
+        function startTimer() {
+            let timer = 12 * 60 * 60; // 12 jam dalam detik
+            let interval = setInterval(function() {
+                timer--;
+                let hours = Math.floor(timer / 3600);
+                let minutes = Math.floor((timer % 3600) / 60);
+                let seconds = timer % 60;
+                document.getElementById('timer').innerText = 'Waktu tersisa: ' + hours + ' jam ' + minutes + ' menit ' + seconds + ' detik';
+                if (timer <= 0) {
+                    clearInterval(interval);
+                    document.getElementById('timer').innerText = 'Waktu telah habis. Anda dapat menambahkan koin lagi.';
+                }
+            }, 1000);
         }
 
         // Fungsi untuk menyumbangkan koin
@@ -84,8 +102,10 @@
             let lastTime = localStorage.getItem('lastTime');
             if (lastTime) {
                 document.getElementById('lastTime').innerText = new Date(parseInt(lastTime)).toLocaleString();
+                startTimer();
             }
         };
     </script>
 </body>
-</html>
+    </html>
+    
