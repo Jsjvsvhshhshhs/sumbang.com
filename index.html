@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Koin Koin</title>
+    <style>
+        .container {
+            text-align: center;
+            margin-top: 50px;
+        }
+        .button {
+            display: inline-block;
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px 25px;
+            text-align: center;
+            font-size: 16px;
+            margin: 4px 2px;
+            transition-duration: 0.4s;
+            cursor: pointer;
+            border-radius: 10px;
+        }
+        .button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Koin Koin</h1>
+        <p>Jumlah koin Anda: <span id="coinAmount">100</span></p>
+        <button class="button" id="addCoinsBtn" onclick="addCoins(100)">Tambahkan 100 Koin</button>
+        <p>Waktu terakhir tambah koin: <span id="lastTime"></span></p>
+        <br>
+        <h2>Options</h2>
+        <select id="options">
+            <option value="palestina">Palestina</option>
+            <option value="amerika">Amerika</option>
+            <option value="israel">Israel</option>
+        </select>
+        <br><br>
+        <label for="coinAmountInput">Masukkan jumlah koin yang akan disumbangkan:</label><br>
+        <input type="number" id="coinAmountInput" name="coinAmountInput" min="1" max="100"><br><br>
+        <button class="button" onclick="donateCoins()">Sumbangkan Koin</button>
+    </div>
+
+    <script>
+        // Fungsi untuk menambahkan koin
+        function addCoins(amount) {
+            let currentTime = new Date().getTime();
+            let lastTime = localStorage.getItem('lastTime');
+            if (!lastTime || (currentTime - lastTime) >= 12 * 60 * 60 * 1000) {
+                let coinAmount = parseInt(localStorage.getItem('coinAmount')) || 100;
+                coinAmount += amount;
+                localStorage.setItem('coinAmount', coinAmount);
+                document.getElementById('coinAmount').innerText = coinAmount;
+                localStorage.setItem('lastTime', currentTime);
+                document.getElementById('lastTime').innerText = new Date(currentTime).toLocaleString();
+            } else {
+                alert('Anda harus menunggu 12 jam sebelum menambahkan koin lagi.');
+            }
+        }
+
+        // Fungsi untuk menyumbangkan koin
+        function donateCoins() {
+            let coinAmountInput = parseInt(document.getElementById('coinAmountInput').value);
+            let coinAmount = parseInt(localStorage.getItem('coinAmount')) || 100;
+            if (coinAmountInput <= coinAmount) {
+                coinAmount -= coinAmountInput;
+                localStorage.setItem('coinAmount', coinAmount);
+                document.getElementById('coinAmount').innerText = coinAmount;
+                alert('Anda telah berhasil menyumbangkan ' + coinAmountInput + ' koin.');
+            } else {
+                alert('Jumlah koin yang dimasukkan untuk disumbangkan melebihi jumlah total koin yang Anda miliki.');
+            }
+        }
+
+        // Set nilai koin saat halaman dimuat
+        window.onload = function() {
+            let coinAmount = parseInt(localStorage.getItem('coinAmount')) || 100;
+            document.getElementById('coinAmount').innerText = coinAmount;
+            let lastTime = localStorage.getItem('lastTime');
+            if (lastTime) {
+                document.getElementById('lastTime').innerText = new Date(parseInt(lastTime)).toLocaleString();
+            }
+        };
+    </script>
+</body>
+</html>
