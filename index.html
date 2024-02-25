@@ -59,24 +59,27 @@
                 document.getElementById('coinAmount').innerText = coinAmount;
                 localStorage.setItem('lastTime', currentTime);
                 document.getElementById('lastTime').innerText = new Date(currentTime).toLocaleString();
-                startTimer();
+                startTimer(currentTime);
             } else {
                 alert('Anda harus menunggu 12 jam sebelum menambahkan koin lagi.');
             }
         }
 
         // Fungsi untuk memulai timer hitung mundur
-        function startTimer() {
-            let timer = 12 * 60 * 60; // 12 jam dalam detik
+        function startTimer(startTime) {
+            let currentTime = new Date().getTime();
+            let elapsedTime = currentTime - startTime;
+            let remainingTime = 12 * 60 * 60 * 1000 - elapsedTime;
             let interval = setInterval(function() {
-                timer--;
-                let hours = Math.floor(timer / 3600);
-                let minutes = Math.floor((timer % 3600) / 60);
-                let seconds = timer % 60;
-                document.getElementById('timer').innerText = 'Waktu tersisa: ' + hours + ' jam ' + minutes + ' menit ' + seconds + ' detik';
-                if (timer <= 0) {
+                remainingTime -= 1000;
+                if (remainingTime <= 0) {
                     clearInterval(interval);
                     document.getElementById('timer').innerText = 'Waktu telah habis. Anda dapat menambahkan koin lagi.';
+                } else {
+                    let hours = Math.floor(remainingTime / (1000 * 60 * 60));
+                    let minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
+                    let seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
+                    document.getElementById('timer').innerText = 'Waktu tersisa: ' + hours + ' jam ' + minutes + ' menit ' + seconds + ' detik';
                 }
             }, 1000);
         }
@@ -95,17 +98,16 @@
             }
         }
 
-        // Set nilai koin saat halaman dimuat
+        // Set nilai koin dan timer saat halaman dimuat
         window.onload = function() {
             let coinAmount = parseInt(localStorage.getItem('coinAmount')) || 100;
             document.getElementById('coinAmount').innerText = coinAmount;
             let lastTime = localStorage.getItem('lastTime');
             if (lastTime) {
                 document.getElementById('lastTime').innerText = new Date(parseInt(lastTime)).toLocaleString();
-                startTimer();
+                startTimer(parseInt(lastTime));
             }
         };
     </script>
 </body>
-    </html>
-    
+</html>
